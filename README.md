@@ -63,21 +63,24 @@ Perfect for bringing students together — one dinner at a time 🍽️
 ```bash
 git clone https://github.com/<your-username>/dinner-with-a-stranger.git
 cd dinner-with-a-stranger
-
+```
 
 
 ### 2️⃣ Backend setup
+```bash
 cd backend
 npm install
 docker-compose up -d
 npx prisma migrate dev --name init
 npm run dev
+```
 
-3️⃣ Frontend setup
+###  3️⃣ Frontend setup
+```bash
 cd ../frontend
 npm install
 npm run dev
-
+```
 
 Now open http://localhost:5173
  🎉
