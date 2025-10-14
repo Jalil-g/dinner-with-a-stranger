@@ -139,7 +139,7 @@ model Submission {
 ---
 
 ---
-🧪 Testing
+## 🧪 Testing
 
 To manually view or edit database entries:
 ```bash
@@ -151,12 +151,16 @@ This opens a browser-based UI to inspect your data.
 
 ---
 
-🚀 Deployment
+## 🚀 Deployment
+---
+
 Frontend
 
 Deploy easily on Vercel, Netlify, or Render.
 
 Set VITE_API_BASE_URL to your backend’s URL in a .env file.
+
+---
 
 Backend
 
@@ -166,11 +170,15 @@ Use a managed PostgreSQL instance or connect your existing one.
 
 Set your production .env like:
 
+```
+
 DATABASE_URL="postgresql://user:password@host:5432/dws?schema=public"
 PORT=8080
 CORS_ORIGIN=https://your-frontend-url.com
+```
+---
 
-🧭 Folder Structure
+## 🧭 Folder Structure
 ```
 dinner-with-a-stranger/
 ├── backend/
