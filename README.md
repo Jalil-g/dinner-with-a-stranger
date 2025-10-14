@@ -66,7 +66,7 @@ cd dinner-with-a-stranger
 
 
 
-2️⃣ Backend setup
+### 2️⃣ Backend setup
 cd backend
 npm install
 docker-compose up -d
