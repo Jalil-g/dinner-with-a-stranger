@@ -91,18 +91,22 @@ cd ../frontend
 npm install
 npm run dev
 ```
+---
 
 Now open http://localhost:5173
  🎉
+
+---
 
 🌿 Environment Variables
 
 Create a .env file inside the backend folder with:
 
+```bash
 DATABASE_URL="postgresql://dws:dws@localhost:5433/dws?schema=public"
 PORT=5174
 CORS_ORIGIN=http://localhost:5173
-
+```
 
 Make sure not to commit .env to GitHub — add it to .gitignore.
 
@@ -110,6 +114,8 @@ Make sure not to commit .env to GitHub — add it to .gitignore.
 Method	Endpoint	Description
 GET	/api/health	Health check endpoint
 POST	/api/submit	Handles form submissions
+
+---
 📚 Database Schema (Prisma)
 model Submission {
   id              Int      @id @default(autoincrement())
@@ -127,14 +133,20 @@ model Submission {
   createdAt       DateTime @default(now())
 }
 
+---
+
+---
 🧪 Testing
 
 To manually view or edit database entries:
+
 
 npx prisma studio
 
 
 This opens a browser-based UI to inspect your data.
+
+---
 
 🚀 Deployment
 Frontend
