@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: dws
+      POSTGRES_PASSWORD: dws
+      POSTGRES_DB: dws
+    ports:
+      - "5433:5432"   # expose the container port 5432 as host port 5433
+    volumes:
+      - ./data:/var/lib/postgresql/data

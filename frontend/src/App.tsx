@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Mail, Clock, User } from "lucide-react";
 
+
 export default function App() {
   const [open, setOpen] = useState(false);
   const [thanks, setThanks] = useState(false);
@@ -221,14 +222,24 @@ function SignupModal({ onClose, onSuccess, }: { onClose: () => void; onSuccess: 
       groupSize,                 // 2 | 4
     };
 
-    // TODO: POST to your backend when ready:
-    // await fetch(import.meta.env.VITE_API_BASE_URL + "/submit", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify(payload),
-    // });
+    try {
+      const base = import.meta.env.VITE_API_BASE_URL || "http://localhost:5174";
+      const res = await fetch(`${base}/api/submit`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
 
-    onSuccess(); // close for now
+    if (!res.ok) {
+      throw new Error("Failed to submit form");
+    }
+
+    console.log("✅ Submitted successfully");
+    onSuccess(); // show thank-you window
+    } catch (err) {
+      console.error(err);
+      alert("There was an error submitting your form. Please try again.");
+    }
   }
 
   return (

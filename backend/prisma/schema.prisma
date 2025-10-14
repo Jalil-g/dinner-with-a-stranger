@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Submission {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  email       String   @unique
+  name        String
+  program     String?
+  gradYear    Int?
+  interests   String[]
+  diet        String?
+  bio         String?
+  musicGenres String[]
+
+  gender          String
+  matchPreference String[] // ["Same sex"], ["Opposite sex"], ["Anyone"], etc.
+  groupSize       Int // 2 or 4
+
+  bioEmbedding Float[] // optional for future vector search
+}
