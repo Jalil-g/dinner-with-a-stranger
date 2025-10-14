@@ -110,13 +110,15 @@ CORS_ORIGIN=http://localhost:5173
 
 Make sure not to commit .env to GitHub — add it to .gitignore.
 
-🧩 API Routes
+---
+
+## 🧩 API Routes
 Method	Endpoint	Description
 GET	/api/health	Health check endpoint
 POST	/api/submit	Handles form submissions
 
----
-📚 Database Schema (Prisma)
+## 📚 Database Schema (Prisma)
+```prisma
 model Submission {
   id              Int      @id @default(autoincrement())
   email           String   @unique
@@ -132,6 +134,7 @@ model Submission {
   groupSize       Int
   createdAt       DateTime @default(now())
 }
+```
 
 ---
 
@@ -139,10 +142,10 @@ model Submission {
 🧪 Testing
 
 To manually view or edit database entries:
-
+```bash
 
 npx prisma studio
-
+```
 
 This opens a browser-based UI to inspect your data.
 
@@ -168,6 +171,7 @@ PORT=8080
 CORS_ORIGIN=https://your-frontend-url.com
 
 🧭 Folder Structure
+```
 dinner-with-a-stranger/
 ├── backend/
 │   ├── prisma/
@@ -189,8 +193,9 @@ dinner-with-a-stranger/
 │   └── thankyou.png
 │
 └── README.md
+```
 
-🌱 Future Roadmap
+## 🌱 Future Roadmap
 
 🤝 Smart pairing algorithm for dinner matches
 
@@ -202,14 +207,14 @@ dinner-with-a-stranger/
 
 🪩 Improved matching preferences and filters
 
-🧑‍🍳 Author
+## 🧑‍🍳 Author
 
 Built by [Jalil G.]
 Connecting students through good food and great conversation 🍝
 
 “Good food tastes better with great company.”
 
-🛡️ License
+## 🛡️ License
 
 MIT License © 2025 — Jalil G.
 Feel free to fork and remix responsibly 💡
