@@ -45,14 +45,24 @@ Perfect for bringing students together — one dinner at a time 🍽️
 
 ---
 
-## 📸 Screenshots
+## 🖼️ Screenshots
 
-| Landing Page | Signup Form | Thank You Screen |
-|---------------|-------------|------------------|
-| ![Landing](./screenshots/landing.png) | ![Form](./screenshots/form.png) | ![Thanks](./screenshots/thankyou.png) |
+<h3>🏠 Landing Page</h3>
+<p align="center">
+  <img src="./screenshots/landing.png" width="800">
+</p>
 
-> Save your screenshots under `/screenshots/` or `frontend/public/screenshots/`  
-> Update the paths above to match your folder if needed.
+<h3>📝 Signup Form</h3>
+<p align="center">
+  <img src="./screenshots/form.png" width="800">
+</p>
+
+<h3>🎉 Thank You Screen</h3>
+<p align="center">
+  <img src="./screenshots/thankyou.png" width="800">
+</p>
+
+
 
 ---
 
