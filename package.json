@@ -1,0 +1,21 @@
+{
+  "name": "dinner-with-a-stranger",
+  "private": true,
+  "workspaces": [
+    "shared",
+    "backend",
+    "frontend"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "postinstall": "npm run build -w shared && npm run prisma:generate -w backend",
+    "dev:shared": "npm run dev -w shared",
+    "dev:backend": "npm run dev -w backend",
+    "dev:frontend": "npm run dev -w frontend",
+    "build": "npm run build -w shared && npm run build -w backend && npm run build -w frontend",
+    "typecheck": "npm run build -w shared && npm run typecheck -w backend && npm run typecheck -w frontend",
+    "lint": "npm run lint -w frontend"
+  }
+}

@@ -14,7 +14,7 @@ Perfect for bringing students together — one dinner at a time 🍽️
 ## 🧠 Features
 
 - ✅ React + Tailwind CSS frontend with **Framer Motion** animations
-- ✅ Signup form validated on the server with **Zod** (enums, length limits, normalization)
+- ✅ One shared **Zod** schema validates the signup form in the browser (inline field errors) and again on the server
 - ✅ Node.js + Express API with Prisma ORM
 - ✅ PostgreSQL via Docker Compose
 - ✅ Spam protection: per-IP rate limiting and a honeypot field
@@ -47,27 +47,42 @@ git clone https://github.com/Jalil-g/dinner-with-a-stranger.git
 cd dinner-with-a-stranger
 ```
 
-### 2️⃣ Backend
+### 2️⃣ Install (from the repo root)
+
+This is an npm workspaces monorepo (`shared`, `backend`, `frontend`). One install at the root covers everything, builds `shared/` and generates the Prisma client.
 
 ```bash
-cd backend
-cp .env.example .env
 npm install
-npm run db:up            # starts Postgres on localhost:5433
-npm run prisma:deploy    # applies migrations
-npm run dev              # API on http://localhost:5174
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
 ```
 
-### 3️⃣ Frontend
+### 3️⃣ Database
 
 ```bash
-cd frontend
-cp .env.example .env
-npm install
-npm run dev              # http://localhost:5173
+npm run db:up -w backend           # starts Postgres on localhost:5433
+npm run prisma:deploy -w backend   # applies migrations
+```
+
+### 4️⃣ Run
+
+```bash
+npm run dev:backend    # terminal 1: API on http://localhost:5174
+npm run dev:frontend   # terminal 2: http://localhost:5173
 ```
 
 Now open http://localhost:5173 🎉
+
+If you edit `shared/submission.ts`, also run `npm run dev:shared` so it rebuilds on save.
+
+### Root scripts
+
+| Script | What it does |
+| --- | --- |
+| `npm run build` | Builds shared, backend and frontend |
+| `npm run typecheck` | Builds shared, then typechecks backend and frontend |
+| `npm run lint` | Lints the frontend |
+| `npm run dev:backend` / `dev:frontend` / `dev:shared` | Dev servers / watch mode |
 
 ## 🌿 Environment Variables
 
@@ -134,9 +149,16 @@ Keep these promises true as features are added (e.g. the intro email and the mat
 
 ## 🚀 Deployment
 
-**Frontend:** deploy on Vercel, Netlify, or Render. Set `VITE_API_BASE_URL` to your backend URL.
+Both apps depend on the `shared` workspace, so install and build from the **repo root**, not from inside `backend/` or `frontend/`.
 
-**Backend:** host on Render, Fly.io, or Railway with a managed PostgreSQL instance. Run `npm run build && npm run prisma:deploy && npm start` with:
+**Frontend:** deploy on Vercel, Netlify, or Render with build command `npm ci && npm run build -w shared && npm run build -w frontend` and output directory `frontend/dist`. Set `VITE_API_BASE_URL` to your backend URL.
+
+**Backend:** host on Render, Fly.io, or Railway with a managed PostgreSQL instance.
+
+- Build: `npm ci && npm run build -w shared && npm run build -w backend && npm run prisma:deploy -w backend`
+- Start: `npm start -w backend`
+
+Environment:
 
 ```bash
 DATABASE_URL="postgresql://user:password@host:5432/dws?schema=public"
@@ -149,13 +171,15 @@ TRUST_PROXY=1
 
 ```
 dinner-with-a-stranger/
+├── shared/
+│   └── submission.ts               # Zod schema, options and limits used by both apps
+│
 ├── backend/
 │   ├── prisma/
 │   │   ├── migrations/
 │   │   └── schema.prisma
 │   ├── src/
 │   │   ├── routes/submissions.ts   # POST /api/submit
-│   │   ├── schemas/submission.ts   # Zod validation
 │   │   ├── app.ts                  # Express app setup
 │   │   ├── config.ts               # env config
 │   │   ├── db.ts                   # Prisma client
@@ -167,15 +191,17 @@ dinner-with-a-stranger/
 │   ├── public/
 │   ├── src/
 │   │   ├── components/             # Hero, SignupModal, ThankYouModal, ...
-│   │   │   └── ui/                 # Field, Modal, ToggleChip
+│   │   │   └── ui/                 # Field, FieldError, Modal, ToggleChip
 │   │   ├── lib/api.ts              # API client
-│   │   ├── constants.ts
+│   │   ├── constants.ts            # display-only data (genres, labels)
 │   │   ├── App.tsx
 │   │   └── main.tsx
 │   ├── .env.example
 │   └── vite.config.ts
 │
 ├── docs/screenshots/
+├── package.json                    # npm workspaces root
+├── package-lock.json
 ├── LICENSE
 └── README.md
 ```
