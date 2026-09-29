@@ -1,12 +1,13 @@
 import express, { type ErrorRequestHandler } from "express";
 import cors from "cors";
-import { CORS_ORIGINS } from "./config.js";
+import { CORS_ORIGINS, TRUST_PROXY } from "./config.js";
 import { submissionsRouter } from "./routes/submissions.js";
 
 export function createApp() {
   const app = express();
 
   app.disable("x-powered-by");
+  app.set("trust proxy", TRUST_PROXY);
   app.use(cors({ origin: CORS_ORIGINS }));
   app.use(express.json({ limit: "20kb" }));
 

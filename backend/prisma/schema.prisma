@@ -20,8 +20,8 @@ model Submission {
   bio         String?
   musicGenres String[]
 
-  gender          String
-  matchPreference String[] // ["Same sex"], ["Opposite sex"], ["Anyone"], etc.
+  gender          String // "Woman" | "Man" | "Non-binary" | "Prefer not to say"
+  matchPreference String[] // genders they want to be matched with, e.g. ["Woman", "Non-binary"], or ["Anyone"]
   groupSize       Int // 2 or 4
 
   bioEmbedding Float[] // optional for future vector search

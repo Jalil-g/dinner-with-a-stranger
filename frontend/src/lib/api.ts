@@ -14,6 +14,8 @@ export type SignupPayload = {
   gender: Gender;
   matchPreference: MatchPreference[];
   groupSize: GroupSize;
+  consent: boolean;
+  website: string; // honeypot, should always be empty
 };
 
 export async function submitSignup(payload: SignupPayload): Promise<void> {

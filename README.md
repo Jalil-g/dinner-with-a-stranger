@@ -17,6 +17,9 @@ Perfect for bringing students together — one dinner at a time 🍽️
 - ✅ Signup form validated on the server with **Zod** (enums, length limits, normalization)
 - ✅ Node.js + Express API with Prisma ORM
 - ✅ PostgreSQL via Docker Compose
+- ✅ Spam protection: per-IP rate limiting and a honeypot field
+- ✅ Privacy note and required consent before signing up
+- ✅ Matching preferences by gender (women / men / non-binary people / anyone)
 - ✅ CORS restricted to configured frontend origins
 - ✅ Fully typed end to end
 
@@ -73,6 +76,8 @@ Now open http://localhost:5173 🎉
 | `backend/.env` | `DATABASE_URL` | `postgresql://dws:dws@localhost:5433/dws?schema=public` | Postgres connection string |
 | `backend/.env` | `PORT` | `5174` | API port |
 | `backend/.env` | `CORS_ORIGIN` | `http://localhost:5173` | Allowed frontend origin(s), comma-separated |
+| `backend/.env` | `TRUST_PROXY` | `0` | Number of reverse proxies in front of the API (`1` on Render/Fly/Railway) so rate limiting sees real client IPs |
+| `backend/.env` | `SUBMIT_RATE_LIMIT` | `20` | Max signup requests per IP per 15 minutes |
 | `frontend/.env` | `VITE_API_BASE_URL` | `http://localhost:5174` | Backend base URL |
 
 `.env` files are git-ignored. Only the `.env.example` templates are committed.
@@ -82,7 +87,9 @@ Now open http://localhost:5173 🎉
 | Method | Endpoint | Description |
 | --- | --- | --- |
 | `GET` | `/api/health` | Health check |
-| `POST` | `/api/submit` | Create a signup. `201` on success, `400` on invalid input, `409` if the email already signed up |
+| `POST` | `/api/submit` | Create a signup. `201` on success, `400` on invalid input or missing consent, `409` if the email already signed up, `429` if rate limited |
+
+Campus Wi-Fi often puts many students behind one public IP, so raise `SUBMIT_RATE_LIMIT` if you expect a sign-up rush at an event.
 
 ## 📚 Database Schema (Prisma)
 
@@ -100,8 +107,8 @@ model Submission {
   bio         String?
   musicGenres String[]
 
-  gender          String
-  matchPreference String[] // ["Same sex"], ["Opposite sex"], ["Anyone"], etc.
+  gender          String   // "Woman" | "Man" | "Non-binary" | "Prefer not to say"
+  matchPreference String[] // genders they want to be matched with, e.g. ["Woman", "Non-binary"], or ["Anyone"]
   groupSize       Int      // 2 or 4
 
   bioEmbedding Float[] // reserved for future vector search
@@ -114,6 +121,17 @@ To browse the data locally:
 cd backend && npm run prisma:studio
 ```
 
+## 🔒 Privacy
+
+The signup form shows a short "How we use your info" note and requires a consent checkbox (also enforced by the API). The note promises that:
+
+- answers are only used for matching and only organizers can see them
+- matched people receive each other's name and email to coordinate
+- gender is only used to respect matching preferences
+- data is never sold or shared with anyone else
+
+Keep these promises true as features are added (e.g. the intro email and the matching algorithm).
+
 ## 🚀 Deployment
 
 **Frontend:** deploy on Vercel, Netlify, or Render. Set `VITE_API_BASE_URL` to your backend URL.
@@ -124,6 +142,7 @@ cd backend && npm run prisma:studio
 DATABASE_URL="postgresql://user:password@host:5432/dws?schema=public"
 PORT=8080
 CORS_ORIGIN=https://your-frontend-url.com
+TRUST_PROXY=1
 ```
 
 ## 🧭 Folder Structure

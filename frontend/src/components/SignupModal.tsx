@@ -1,5 +1,14 @@
 import { useState, type FormEvent } from "react";
-import { GENDERS, GENRES, GROUP_SIZES, MATCH_PREFERENCES, type Gender, type GroupSize, type MatchPreference } from "../constants";
+import {
+  GENDERS,
+  GENRES,
+  GROUP_SIZES,
+  MATCH_PREFERENCE_LABELS,
+  MATCH_PREFERENCES,
+  type Gender,
+  type GroupSize,
+  type MatchPreference,
+} from "../constants";
 import { submitSignup } from "../lib/api";
 import { Field } from "./ui/Field";
 import { Modal } from "./ui/Modal";
@@ -53,6 +62,8 @@ export function SignupModal({ onClose, onSuccess }: { onClose: () => void; onSuc
         gender,
         matchPreference: matchPref,
         groupSize,
+        consent: fd.get("consent") === "on",
+        website: text("website"),
       });
       onSuccess();
     } catch (err) {
@@ -101,16 +112,18 @@ export function SignupModal({ onClose, onSuccess }: { onClose: () => void; onSuc
         </div>
 
         <fieldset className="md:col-span-2 space-y-2">
-          <legend className="text-sm font-medium">Matching with (select one or more)</legend>
+          <legend className="text-sm font-medium">I’d like to have dinner with (pick all that apply)</legend>
           <div className="flex flex-wrap gap-2">
             {MATCH_PREFERENCES.map((opt) => (
               <ToggleChip key={opt} selected={matchPref.includes(opt)} onClick={() => toggleMatchPref(opt)}>
-                {opt}
+                {MATCH_PREFERENCE_LABELS[opt]}
               </ToggleChip>
             ))}
           </div>
           <p className="text-xs text-neutral-500">
-            If you pick <b>Anyone</b>, we’ll consider everyone regardless of gender.
+            {gender === "Prefer not to say"
+              ? "Since you’d rather not share your gender, you’ll be matched with people who picked Anyone."
+              : "You’ll only be matched with people whose preferences include you too."}
           </p>
         </fieldset>
 
@@ -147,6 +160,27 @@ export function SignupModal({ onClose, onSuccess }: { onClose: () => void; onSuc
             className="mt-1 w-full rounded-md border px-3 py-2 outline-none focus:ring-2 focus:ring-rose-300"
             required
           />
+        </div>
+
+        <div className="md:col-span-2 rounded-xl border bg-neutral-50 p-4 text-xs text-neutral-600 space-y-2">
+          <p className="text-sm font-medium text-neutral-800">How we use your info</p>
+          <ul className="list-disc pl-4 space-y-1">
+            <li>Your answers are only used to find you a dinner match. Only the organizers can see them.</li>
+            <li>Once you’re matched, we share your name and email with your dinner group so you can coordinate.</li>
+            <li>Your gender is only used to respect everyone’s matching preferences.</li>
+            <li>We never sell your data or share it with anyone else.</li>
+          </ul>
+        </div>
+
+        <label className="md:col-span-2 flex items-start gap-2 text-sm">
+          <input type="checkbox" name="consent" required className="mt-0.5 h-4 w-4 accent-rose-500" />
+          <span>I agree to my answers being used to match me for dinner, as described above.*</span>
+        </label>
+
+        {/* Honeypot: hidden from people, but bots tend to fill in every field */}
+        <div aria-hidden="true" className="sr-only">
+          <label htmlFor="website">Website</label>
+          <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
         </div>
 
         {error && (

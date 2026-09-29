@@ -1,12 +1,27 @@
 import { Router } from "express";
+import { rateLimit } from "express-rate-limit";
 import { Prisma } from "@prisma/client";
+import { SUBMIT_RATE_LIMIT } from "../config.js";
 import { prisma } from "../db.js";
 import { submissionSchema } from "../schemas/submission.js";
 
 export const submissionsRouter = Router();
 
-submissionsRouter.post("/submit", async (req, res) => {
-  const parsed = submissionSchema.safeParse(req.body);
+const submitLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: SUBMIT_RATE_LIMIT,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  message: { error: "Too many signups from this network. Please try again in a few minutes." },
+});
+
+submissionsRouter.post("/submit", submitLimiter, async (req, res) => {
+  // Honeypot: the "website" field is hidden from people, but bots tend to fill
+  // in every input. Pretend it worked so they don't learn to skip it.
+  const { website, ...body } = req.body ?? {};
+  if (website) return res.status(201).json({ ok: true });
+
+  const parsed = submissionSchema.safeParse(body);
   if (!parsed.success) {
     return res.status(400).json({ error: "Invalid submission", details: parsed.error.flatten() });
   }
